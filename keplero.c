@@ -113,6 +113,35 @@ double anomvera(double e, double psi)
     return 2*(atan(sqrt((1+e)/(1-e))*tan(psi/2))+M_PI);
 }
 
+/* Funzione per calcolare l'anomalia vera facendo uso delle funzioni di Bessel
+ * (vedi pagina 554 del libro di G. N. Watson sulle funzioni di Bessel). Questa
+ * funzione non è molto efficiente (converge *molto* lentamente e i tempi di
+ * esecuzione sono elevati) e non è stata testata a sufficienza. La metto qui
+ * solo per curiosità ma il suo utilizzo è sconsigliato. */
+double anomvera_bessel(double e, double phi)
+{
+  int n, m;
+  double theta=fmod(phi,2*M_PI), C, D=0;
+  double f;
+  f=e/(1+sqrt(1-e*e));
+  for(n=1;n<=MAX_BESSEL;n++)
+    {
+      for(m=1;m<=MAX_BESSEL;m++)
+	{
+	  /* esco dal ciclo in caso di numeri troppo piccoli per evitare underflow */
+	  if(bessel_Jn(n+m,n*e)<1e-305 || bessel_Jn(n-m,n*e)<1e-305)
+	    /* TODO: provare a salvare i risultati di queste operazioni in
+	       variabili, di modo che se l'if da esito negativo non sia
+	       necessario ripetere nuovamente il calcolo.*/
+	    break ;
+	  D+=pow(f,m)*(bessel_Jn(n-m,n*e) + bessel_Jn(n+m,n*e));
+	}
+      C=2./n*(bessel_Jn(n,n*e) + D);
+      theta+=C*sin(n*phi);
+    }
+  return theta;
+}
+
 /* Funzione che trasforma le coordinate del punto Qa del sistema di riferimento
  * intrinseco al sistema binario nelle coordinate del punto Qb visto da un
  * osservatore nel proprio piano del cielo. Abbiamo sfruttato la formula (1.97)

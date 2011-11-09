@@ -35,5 +35,6 @@ double psi_bessel(double, double);
 double r_bessel(double, double, double);
 double r(double, double, double);
 double anomvera(double, double);
+double anomvera_bessel(double, double);
 void pianodelcielo(double Qa[3], double, double, double Qb[3]);
 void vettore_scalare(int, double a[], double b[], double);
