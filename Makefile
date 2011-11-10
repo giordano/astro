@@ -1,5 +1,5 @@
 SHELL		= /bin/sh
-CC		= gcc-4.4
+CC		= gcc
 CFLAGS		= -Wall -pedantic
 LIBRARIES	= -lm -lgsl -lgslcblas
 CLEAN_FILES	= keplero.o transiti.o *~
@@ -8,7 +8,7 @@ DISTCLEAN_FILES	= esempio *.dat
 .PHONY: clean distclean check-syntax
 
 esempio: esempio.c keplero.o transiti.o
-	$(CC) $(CFLAGS) $(LIBRARIES) -o $@ $^
+	$(CC) $^ $(CFLAGS) $(LIBRARIES) -o $@
 
 transiti.o: transiti.c transiti.h keplero.o
 	$(CC) -c $(CFLAGS) $(LIBRARIES) transiti.c
