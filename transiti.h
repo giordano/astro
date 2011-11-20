@@ -15,6 +15,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "keplero.h"
+#include <gsl/gsl_sf_ellint.h>
+
+/* Definisco macro per le funzione degli integrali ellittici completi. */
+#define ellint_K(k) gsl_sf_ellint_Kcomp(sqrt(k),GSL_PREC_SINGLE)
+#define ellint_E(k) gsl_sf_ellint_Ecomp(sqrt(k),GSL_PREC_SINGLE)
+#define ellint_Pi(n,k) gsl_sf_ellint_Pcomp(sqrt(k),-n,GSL_PREC_SINGLE)
+
+/* Macro che fornisce la funzione gradino di Heaviside. */
+#define HEAVISIDE(z) (z > 0) ? 1 : ((z == 0) ? 1/2 : 0)
 
 double area_coperta(double, double, double, double, double);
 double flusso(double, double, double, double);
+double lambdae(double, double);
+double flusso_ma(double, double, double, double);

@@ -1,6 +1,6 @@
 SHELL		= /bin/sh
 CC		= gcc
-CFLAGS		= -Wall -pedantic
+CFLAGS		= -Wall -pedantic -std=c99
 LIBRARIES	= -lm -lgsl -lgslcblas
 CLEAN_FILES	= keplero.o transiti.o *~
 DISTCLEAN_FILES	= esempio *.dat

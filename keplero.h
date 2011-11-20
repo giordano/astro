@@ -15,6 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <math.h>
+ #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_bessel.h>
 
 /* Definisco funzioni in modo che richiamino le corrispondenti funzioni della
