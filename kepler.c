@@ -141,12 +141,14 @@ double anomvera_bessel(double e, double phi)
   return theta;
 }
 
-/* Funzione che trasforma le coordinate del punto Qa del sistema di riferimento
- * intrinseco al sistema binario nelle coordinate del punto Qb visto da un
- * osservatore nel proprio piano del cielo. Abbiamo sfruttato la formula (1.97)
- * di pagina 24 della tesi e le trasformazioni discusse nel capitolo 4 del
- * Goldstein, Poole e Safko (vedi la bibliografia). `phi' è l'angolo fra l'asse
- * x' e l'asse x, `i' è l'angolo fra l'asse z e x'', come spiegato nella tesi.
+/* Funzione che trasforma le coordinate del punto Qa del
+ * sistema di riferimento intrinseco al sistema binario
+ * nelle coordinate del punto Qb visto da un osservatore
+ * nel proprio piano del cielo. Abbiamo sfruttato la formula
+ * (1.97) di pagina 24 della tesi e le trasformazioni discusse
+ * nel capitolo 4 del Goldstein, Poole e Safko (vedi la
+ * bibliografia). `phi' è l'angolo fra l'asse x' e l'asse x,
+ * `i' è l'angolo fra l'asse z e x'', come spiegato nella tesi.
  */
 void pianodelcielo(double Qa[3], double phi, double i, double Qb[3])
 {
@@ -155,9 +157,9 @@ void pianodelcielo(double Qa[3], double phi, double i, double Qb[3])
   Qb[2]=cos(i)*(Qa[1]*sin(phi)-Qa[0]*cos(phi))+Qa[2]*sin(i);
 }
 
-/* Funzione che calcola il prodotto fra il vettore `a' e lo scalare `c',
- * salvando il risultato nel vettore `b'. Il primo argomento è la lunghezza dei
- * due vettori `a' e `b'.
+/* Funzione che calcola il prodotto fra il vettore `a' e lo
+ * scalare `c', salvando il risultato nel vettore `b'. Il primo
+ * argomento è la lunghezza dei due vettori `a' e `b'.
  */
 void vettore_scalare(int n, double a[], double b[], double c)
 {
