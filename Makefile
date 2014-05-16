@@ -3,8 +3,8 @@ CC		= gcc
 CFLAGS		= -Wall -pedantic -std=c99
 AR		= ar
 LIBRARIES	= -lm -lgsl -lgslcblas
-CLEAN_FILES	= kepler.o transits.o *~
-DISTCLEAN_FILES	= example *.dat
+CLEAN_FILES	= *~
+DISTCLEAN_FILES	= example *.dat *.a *.o
 
 .PHONY: all install uninstall clean distclean check-syntax
 
@@ -32,13 +32,14 @@ kepler-fortran.o: kepler-fortran.c kepler-fortran.h kepler.o
 	$(CC) -c $(CFLAGS) $(LIBRARIES) kepler-fortran.c
 
 install: libgastro.a libgastro-fortran.a kepler.h kepler-fortran.h \
-		transits.h transits-fortran.h
+		transits.h transits-fortran.h lensing.f
 	install -m 644 libgastro.a /usr/local/lib
 	install -m 644 libgastro-fortran.a /usr/local/lib
 	install -m 644 kepler.h /usr/local/include
 	install -m 644 kepler-fortran.h /usr/local/include
 	install -m 644 transits.h /usr/local/include
 	install -m 644 transits-fortran.h /usr/local/include
+	install -m 644 lensing.f /usr/local/include
 
 uninstall:
 	rm -rf /usr/local/lib/libgastro.a /usr/local/lib/libgastro-fortran.a \
