@@ -38,3 +38,5 @@ double anomvera(double, double);
 double anomvera_bessel(double, double);
 void pianodelcielo(double Qa[3], double, double, double Qb[3]);
 void vettore_scalare(int, double a[], double b[], double);
+void coordinates(double, double, double, double, double, double, double,
+		 double p1pc[], double p2pc[]);

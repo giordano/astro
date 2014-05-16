@@ -22,9 +22,8 @@
  */
 double f(double psi, double e, double phi)
 {
-  /* phi deve trovarsi nell'intervallo [0,2pi] */
-  phi=fmod(phi,2*M_PI);
-  return psi-e*sin(psi)-phi;
+  /* `phi' should be in the [0,2pi] interval. */
+  return psi-e*sin(psi)-fmod(phi,2*M_PI);
 }
 
 /* Funzione che restituisce la derivata rispetto a x del
@@ -165,4 +164,28 @@ void vettore_scalare(int n, double a[], double b[], double c)
   int i;
   for (i=0; i<n; i++)
     b[i]=c*a[i];
+}
+
+void coordinates(double ang, double phi, double i, double e, double a, double m1,
+		 double m2, double p1pc[], double p2pc[])
+{
+  double psi, r, theta, ppf[3], ppfpc[3], mu;
+  mu=m1*m2/(m1+m2);
+  /* Calculate eccentric anomaly. */
+  psi=psi_bessel(ang, e);
+  /* Calculate distance to the focus. */
+  r=r_bessel(ang, a, e);
+  /* Calculate true anomaly. */
+  theta=anomvera(e,psi);
+  /* x coordinate of the fictitious particle. */
+  ppf[0]=r*cos(theta);
+  /* y coordinate of the fictitious particle. */
+  ppf[1]=r*sin(theta);
+  /* The z coordinate of the fictitious particle is always zero. */
+  ppf[2]=0.;
+  /* Calculate the coordinates of the fictitious particle and of the two bodies
+   * in the sky plane. */
+  pianodelcielo(ppf, phi, i, ppfpc);
+  vettore_scalare(3,ppfpc,p1pc,-mu/m1);
+  vettore_scalare(3,ppfpc,p2pc,mu/m2);
 }
