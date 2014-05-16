@@ -1,7 +1,6 @@
-/* transiti.h -- Header della libreria per la simulazioni di transiti di pianeti
- * extrasolari davanti alle stelle compagne.
+/* transits.h
  *
- * Copyright (C) 2011 Mosè Giordano
+ * Copyright (C) 2011, 2014 Mosè Giordano
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -14,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "keplero.h"
+#include "kepler.h"
 #include <gsl/gsl_sf_ellint.h>
 
 /* Definisco macro per le funzione degli integrali ellittici completi. */

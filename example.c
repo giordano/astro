@@ -1,7 +1,7 @@
-/* esempio.c -- Programma di esempio di simulazione di transito di un pianeta
- * extrasolare davanti alla stella compagna.
+/* example.c -- Example of simulation of a transit of an extrasolar planet in
+ * front of a companion star.
  *
- * Copyright (C) 2011 Mosè Giordano
+ * Copyright (C) 2011, 2014 Mosè Giordano
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <gsl/gsl_sf_bessel.h>
-#include "transiti.h"
+#include "transits.h"
 /* Includo header della GSL contenente il valore di alcune costanti fisiche in
  * unità CGSM */
 #include <gsl/gsl_const_cgsm.h>

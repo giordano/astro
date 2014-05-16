@@ -1,6 +1,6 @@
-/* keplero.c -- Libreria per la risoluzione dell'equazione di Keplero.
+/* kepler.c -- Library for solving the Kepler equation.
  *
- * Copyright (C) 2011 Mosè Giordano
+ * Copyright (C) 2011, 2014 Mosè Giordano
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "keplero.h"
+#include "kepler.h"
 
 /* Funzione di cui vogliamo trovare le radici. Il primo
  * argomento è l'anomalia eccentrica, il secondo argomento

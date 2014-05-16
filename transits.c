@@ -1,7 +1,6 @@
-/* transiti.c -- Libreria per la simulazioni di transiti di pianeti extrasolari
- * davanti alle stelle compagne.
+/* transits.c -- Librery for the simulation of transits.
  *
- * Copyright (C) 2011 Mosè Giordano
+ * Copyright (C) 2011, 2014 Mosè Giordano
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -19,7 +18,7 @@
  * consulta anche l'elenco delle errata corrige qui:
  * http://www.astro.washington.edu/users/agol/mandel_agol_errata.pdf
  */
-#include "transiti.h"
+#include "transits.h"
 
 /* Funzione che restituisce l'area di di sovrapposizione fra i due corpi.  `r1'
  * è il raggio della stella, `r2' del pianeta, `d' è la loro distanza

@@ -1,7 +1,6 @@
-/* keplero.h -- Header della libreria per la risoluzione dell'equazione di
- * Keplero.
+/* kepler.h
  *
- * Copyright (C) 2011 Mosè Giordano
+ * Copyright (C) 2011, 2014 Mosè Giordano
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -15,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <math.h>
- #include <gsl/gsl_math.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_bessel.h>
 
 /* Definisco funzioni in modo che richiamino le corrispondenti funzioni della
