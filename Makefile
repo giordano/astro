@@ -2,19 +2,19 @@ SHELL		= /bin/sh
 CC		= gcc
 CFLAGS		= -Wall -pedantic -std=c99
 LIBRARIES	= -lm -lgsl -lgslcblas
-CLEAN_FILES	= keplero.o transiti.o *~
-DISTCLEAN_FILES	= esempio *.dat
+CLEAN_FILES	= kepler.o transits.o *~
+DISTCLEAN_FILES	= example *.dat
 
 .PHONY: clean distclean check-syntax
 
-esempio: esempio.c keplero.o transiti.o
+example: example.c kepler.o transits.o
 	$(CC) $^ $(CFLAGS) $(LIBRARIES) -o $@
 
-transiti.o: transiti.c transiti.h keplero.o
-	$(CC) -c $(CFLAGS) $(LIBRARIES) transiti.c
+transits.o: transits.c transits.h kepler.o
+	$(CC) -c $(CFLAGS) $(LIBRARIES) transits.c
 
-keplero.o: keplero.c keplero.h
-	$(CC) -c $(CFLAGS) $(LIBRARIES) keplero.c
+kepler.o: kepler.c kepler.h
+	$(CC) -c $(CFLAGS) $(LIBRARIES) kepler.c
 
 clean:
 	rm -f $(CLEAN_FILES)
