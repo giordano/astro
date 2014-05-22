@@ -24,5 +24,5 @@
  */
 void extended_uniform_source_amp_(double *u, double *rs, double *amp)
 {
-  (*amp)=Gcomp((*u), (*rs))/(2.*M_PI*(*rs)*(*rs));
+  (*amp)=agol_Gcomp((*u), (*rs))/(2.*M_PI*(*rs)*(*rs));
 }
