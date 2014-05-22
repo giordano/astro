@@ -33,7 +33,6 @@
  */
 
 #include <stdio.h>
-#include <math.h>
 #include <gsl/gsl_sf_bessel.h>
 #include "transits.h"
 /* Includo header della GSL contenente il valore di alcune costanti fisiche in
