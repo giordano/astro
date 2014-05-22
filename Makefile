@@ -5,15 +5,23 @@ AR		= ar
 LIBRARIES	= -lm -lgsl -lgslcblas
 CLEAN_FILES	= *~
 DISTCLEAN_FILES	= example *.dat *.a *.o
+INSTALL_LIBS	= libgastro.a libgastro-fortran.a
+LIBS_DIR	= /usr/local/lib
+INSTALLED_LIBS	= $(patsubst %, $(LIBS_DIR)/%, $(INSTALL_LIBS))
+INSTALL_HEADERS	= kepler.h kepler-fortran.h transits.h transits-fortran.h \
+		  lensing.h lensing-fortran.h lensing.f
+HEADERS_DIR	= /usr/local/include
+INSTALLED_HEADERS = $(patsubst %, $(HEADERS_DIR)/%, $(INSTALL_HEADERS))
+INSTALLED_FILES = $(INSTALLED_LIBS) $(INSTALLED_HEADERS)
 
 .PHONY: all install uninstall clean distclean check-syntax
 
 all: libgastro.a libgastro-fortran.a
 
-libgastro.a: kepler.o transits.o
+libgastro.a: kepler.o transits.o lensing.o
 	$(AR) rcs $@ $^
 
-libgastro-fortran.a: kepler-fortran.o transits-fortran.o
+libgastro-fortran.a: kepler-fortran.o transits-fortran.o lensing-fortran.o
 	$(AR) rcs $@ $^
 
 example: example.c kepler.o transits.o
@@ -31,20 +39,22 @@ kepler.o: kepler.c kepler.h
 kepler-fortran.o: kepler-fortran.c kepler-fortran.h kepler.o
 	$(CC) -c $(CFLAGS) $(LIBRARIES) kepler-fortran.c
 
-install: libgastro.a libgastro-fortran.a kepler.h kepler-fortran.h \
-		transits.h transits-fortran.h lensing.f
-	install -m 644 libgastro.a /usr/local/lib
-	install -m 644 libgastro-fortran.a /usr/local/lib
-	install -m 644 kepler.h /usr/local/include
-	install -m 644 kepler-fortran.h /usr/local/include
-	install -m 644 transits.h /usr/local/include
-	install -m 644 transits-fortran.h /usr/local/include
-	install -m 644 lensing.f /usr/local/include
+lensing.o: lensing.c lensing.h
+	$(CC) -c $(CFLAGS) $(LIBRARIES) lensing.c
+
+lensing-fortran.o: lensing-fortran.c lensing-fortran.h lensing.o
+	$(CC) -c $(CFLAGS) $(LIBRARIES) lensing-fortran.c
+
+$(LIBS_DIR)/%: %
+	install -m 644 $^ $(LIBS_DIR)
+
+$(HEADERS_DIR)/%: %
+	install -m 644 $^ $(HEADERS_DIR)
+
+install: $(INSTALLED_FILES)
 
 uninstall:
-	rm -rf /usr/local/lib/libgastro.a /usr/local/lib/libgastro-fortran.a \
-	/usr/local/include/kepler.h /usr/local/include/kepler-fortran.h \
-	/usr/local/include/transits.h /usr/local/include/transits-fortran.h
+	rm -rf $(INSTALLED_FILES)
 
 clean:
 	rm -f $(CLEAN_FILES)
