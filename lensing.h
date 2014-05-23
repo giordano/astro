@@ -12,13 +12,20 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * References: + Gradshteyn & Ryzhik, "Table of Integrals, Series, and
+ *               Products", Alan Jeffrey (ed.), Fifth edition (January 1994).
  */
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_ellint.h>
 
-#define ellint_Kcomp(k)   gsl_sf_ellint_Kcomp(k,ELLINT_PRECISION)
-#define ellint_Ecomp(k)   gsl_sf_ellint_Ecomp(k,ELLINT_PRECISION)
+/* Elliptic integrals as defined in Gradshteyn & Ryzhik 1994 (8.11-8.12). */
+#define ellint_Kcomp(k)   gsl_sf_ellint_Kcomp(k,   ELLINT_PRECISION)
+#define ellint_Ecomp(k)   gsl_sf_ellint_Ecomp(k,   ELLINT_PRECISION)
 #define ellint_Pcomp(k,n) gsl_sf_ellint_Pcomp(k,-n,ELLINT_PRECISION)
+#define ellint_F(phi,k)   gsl_sf_ellint_K(phi,k,   ELLINT_PRECISION)
+#define ellint_E(phi,k)   gsl_sf_ellint_E(phi,k,   ELLINT_PRECISION)
+#define ellint_P(phi,k,n) gsl_sf_ellint_P(phi,k,-n,ELLINT_PRECISION)
 
 double agol_Gcomp(double, double);
-double extended_uniform_source_amp(double, double);
+double extended_uniform_source_amp(double, double, double);
