@@ -63,13 +63,6 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
   UU=uu*uu;
   rlrl=rl*rl;
   rsrs=rs*rs;
-  /* Conversion table
-   * rs:      rs
-   * rl:      rl
-   * uu:      be = bvec*rs
-   * muplus:  muop
-   * muminus: muom
-   */
 
   if (fabs(rs) < EPSILON)
     { /* rs = 0 */

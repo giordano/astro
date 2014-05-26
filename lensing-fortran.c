@@ -15,14 +15,14 @@
  */
 #include "lensing-fortran.h"
 
-/* Compute the amplification for an extended source with uniform brightness and
- * unocculted images, using equations (14) and (25) in Agol 2002.  This is the
- * same as equation (9) of Witt & Mao 1994.  Arguments:
- *   u   (in)  = distance between source and lens;
+/* Compute the amplification for an extended source with uniform brightness,
+ * using equations (16)-(25) in Agol 2002.  Arguments:
+ *   uu  (in)  = distance between source and lens;
  *   rs  (in)  = source radius;
  *   amp (out) = amplification of the source.
  */
-void extended_uniform_source_amp_(double *u, double *rs, double *amp)
+void extended_uniform_source_amp_(double *uu, double *rs, double *amp)
 {
-  (*amp)=agol_Gcomp((*u), (*rs))/(2.*M_PI*(*rs)*(*rs));
+  (*amp)=extended_uniform_source_amp((*uu), (*rs), (*amp));
+  
 }
