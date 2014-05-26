@@ -26,9 +26,14 @@
 #define ellint_Kcomp(k)   gsl_sf_ellint_Kcomp(k,   ELLINT_PRECISION)
 #define ellint_Ecomp(k)   gsl_sf_ellint_Ecomp(k,   ELLINT_PRECISION)
 #define ellint_Pcomp(k,n) gsl_sf_ellint_Pcomp(k,-n,ELLINT_PRECISION)
-#define ellint_F(phi,k)   gsl_sf_ellint_K(phi,k,   ELLINT_PRECISION)
+#define ellint_F(phi,k)   gsl_sf_ellint_F(phi,k,   ELLINT_PRECISION)
 #define ellint_E(phi,k)   gsl_sf_ellint_E(phi,k,   ELLINT_PRECISION)
 #define ellint_P(phi,k,n) gsl_sf_ellint_P(phi,k,-n,ELLINT_PRECISION)
+
+/* Signum function */
+#define SGN(x) ((fabs(x) < EPSILON) ? 0. : x/fabs(x))
+/* Heaviside step function */
+#define HEAVISIDE(x) ((x >= -EPSILON) ? 1. : ((fabs(x) < EPSILON) ? 0.5 : 0.))
 
 double agol_G(double, double, double);
 double extended_uniform_source_amp(double, double, double);
