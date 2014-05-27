@@ -131,12 +131,12 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	{ /* 0 < rl < 1 */
 	  /* Project lens radius onto source plane */
 	  bl=1/rl - rl;
-	  if (uu - (bl + rs) <= EPSILON)
-	    { /* zeta_0 <= beta_l + rs */
-	      /* Both images, case III or IV */
-	      return mu;
+	  if (uu - (bl + rs) > EPSILON)
+	    { /* zeta_0 > beta_l + rs */
+	      /* Inner image case II (mu_{-}=0), outer image case III */
+	      return muplus;
 	    }
-	  else if (fabs(uu - rs) < EPSILON && rs > 0.5*bl)
+	  else if (fabs(uu - rs) < EPSILON && rs - 0.5*bl > EPSILON)
 	    { /* zeta_0 = rs && rs > beta_l/2  */
 	      /* Outer image case IV (muplus already calculated), inner image
 	       * case VI.

@@ -19,6 +19,7 @@
  * using equations (16)-(25) in Agol 2002.  Arguments:
  *   uu  (in)  = distance between source and lens;
  *   rs  (in)  = source radius;
+ *   rl  (in)  = lens radius;
  *   amp (out) = amplification of the source.
  */
 void extended_uniform_source_amp_(double *uu, double *rs, double *rl,
