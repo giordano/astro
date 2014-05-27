@@ -5,7 +5,7 @@ AR		= ar
 LIBRARIES	= -lm -lgsl -lgslcblas
 CLEAN_FILES	= *~
 DISTCLEAN_FILES	= example *.dat *.a *.o
-INSTALL_LIBS	= libgastro.a libgastro-fortran.a
+INSTALL_LIBS	= libgastro.a
 LIBS_DIR	= /usr/local/lib
 INSTALLED_LIBS	= $(patsubst %, $(LIBS_DIR)/%, $(INSTALL_LIBS))
 INSTALL_HEADERS	= kepler.h kepler-fortran.h transits.h transits-fortran.h \
@@ -18,10 +18,8 @@ INSTALLED_FILES = $(INSTALLED_LIBS) $(INSTALLED_HEADERS)
 
 all: libgastro.a libgastro-fortran.a
 
-libgastro.a: kepler.o transits.o lensing.o
-	$(AR) rcs $@ $^
-
-libgastro-fortran.a: kepler-fortran.o transits-fortran.o lensing-fortran.o
+libgastro.a: kepler.o transits.o lensing.o kepler-fortran.o transits-fortran.o \
+	     lensing-fortran.o
 	$(AR) rcs $@ $^
 
 example: example.c kepler.o transits.o
