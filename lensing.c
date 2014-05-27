@@ -46,9 +46,11 @@ double agol_G(double phi, double uu, double rs)
     /* For the special case phi = pi/2 use the dedicated complete elliptic
      * integral functions, which are slighly faster than the incomplete ones.
      */
-    return ((4.*u2 + u1u2)*ellint_Ecomp(k1) - (u1u2 + 8.*u3)*ellint_Kcomp(k1) + 4.*u1*(1. + rsrs)*ellint_Pcomp(k1, nn))/sqrt((4.*u2 + u1u2));
+    return ((4.*u2 + u1u2)*ellint_Ecomp(k1) - (u1u2 + 8.*u3)*ellint_Kcomp(k1)
+	    + 4.*u1*(1. + rsrs)*ellint_Pcomp(k1, nn))/sqrt((4.*u2 + u1u2));
   else
-    return ((4.*u2 + u1u2)*ellint_E(phi, k1) - (u1u2 + 8.*u3)*ellint_F(phi, k1) + 4.*u1*(1. + rsrs)*ellint_P(phi, k1, nn))/sqrt((4.*u2 + u1u2));
+    return ((4.*u2 + u1u2)*ellint_E(phi, k1) - (u1u2 + 8.*u3)*ellint_F(phi, k1)
+	    + 4.*u1*(1. + rsrs)*ellint_P(phi, k1, nn))/sqrt((4.*u2 + u1u2));
 }
 
 /* Compute the amplification for an extended source with uniform brightness,
@@ -58,8 +60,8 @@ double agol_G(double phi, double uu, double rs)
  */
 double extended_uniform_source_amp(double uu, double rs, double rl)
 {
-  double UU, rlrl, rsrs, muplus, muminus,  mu, v1, v2, u0, u1, u2, u3, phi0,
-    phi1, phi2, psi0, psi1, psi2, a1, a2, bl;
+  double UU, rlrl, rsrs, muplus, muminus,  mu, v1, v2, u0, u1, u2, u3,
+    phi0, phi1, phi2, psi0, psi1, psi2, a1, a2, bl;
   UU=uu*uu;
   rlrl=rl*rl;
   rsrs=rs*rs;
@@ -129,10 +131,10 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	{ /* 0 < rl < 1 */
 	  /* Project lens radius onto source plane */
 	  bl=1/rl - rl;
-	  if (uu - (bl + rs) >= -EPSILON)
-	    { /* zeta_0 >= beta_l + rs */
-	      /* Inner image case II (mu_{-} = 0), outer image case III */
-	      return muplus;
+	  if (uu - (bl + rs) <= EPSILON)
+	    { /* zeta_0 <= beta_l + rs */
+	      /* Both images, case III or IV */
+	      return mu;
 	    }
 	  else if (fabs(uu - rs) < EPSILON && rs > 0.5*bl)
 	    { /* zeta_0 = rs && rs > beta_l/2  */
@@ -142,14 +144,20 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	      v1=sqrt(4. + bl*bl);
 	      v2=sqrt(4.*rsrs - bl*bl);
 	      /* TODO: check this formula */
-	      a1=(0.25*v2*(bl - v1) + (1. + rsrs)*(acos(0.5*bl/rs)
-						   - atan(v2/v1)))/(M_PI*rsrs);
+	      a1=(0.25*v2*(bl - v1)
+		  + (1. + rsrs)*(acos(0.5*bl/rs)
+				 - atan(v2/v1)))/(M_PI*rsrs);
 	      a2=rlrl/M_PI/rsrs*acos(0.5*bl/rs);
 	      return muplus + muminus + a1 - a2;
 	    }
+	  else if (uu - (bl - rs) <= EPSILON)
+	    { /* zeta_0 <= beta_l - rs */
+	      /* Both images, case III */
+	      return mu;
+	    }
 	  else if (uu - (rs - bl) <= EPSILON)
 	    { /* zeta_0 <= rs - beta_l */
-	      /* Inner image, case VII */
+	      /* Inner image case VII, outer image case III */
 	      return muplus + (1. - rlrl)/rsrs;
 	    }
 	  else
@@ -172,7 +180,7 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	{ /* rl > 1 */
 	  /* Inner image, case II (mu_{-} = 0) */
 	  bl=rl - 1./rl;
-	  if (uu > bl + rs)
+	  if (uu - (bl + rs) > EPSILON)
 	    { /* zeta_0 > beta_l + rs */
 	      /* Outer image, case III */
 	      return muplus;

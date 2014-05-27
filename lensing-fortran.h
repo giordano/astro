@@ -15,4 +15,4 @@
  */
 #include "lensing.h"
 
-void extended_uniform_source_amp_(double*, double*, double*);
+void extended_uniform_source_amp_(double*, double*, double*, double*);

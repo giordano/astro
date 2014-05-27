@@ -21,8 +21,8 @@
  *   rs  (in)  = source radius;
  *   amp (out) = amplification of the source.
  */
-void extended_uniform_source_amp_(double *uu, double *rs, double *amp)
+void extended_uniform_source_amp_(double *uu, double *rs, double *rl,
+				  double *amp)
 {
-  (*amp)=extended_uniform_source_amp((*uu), (*rs), (*amp));
-  
+  (*amp)=extended_uniform_source_amp((*uu), (*rs), (*rl));
 }
