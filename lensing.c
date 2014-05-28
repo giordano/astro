@@ -170,7 +170,7 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	      phi0=acos(sqrt(u1*(u2 - u0)/(u0*(u2-u1))));
 	      phi1=acos((u1 + u2 - 2.*u0)/(u2-u1));
 	      phi2=acos((u3 + u0)/(2.*uu*bl));
-	      return muplus + HEAVISIDE(uu - rs)/rsrs -
+	      return muplus + HEAVISIDE(rs - uu)/rsrs -
 		(-4.*SGN(u3)*phi0 + 2.*(1. + rsrs)*phi1 + 4.*rlrl*phi2 +
 		 sqrt((u2 - u0)*(u0 - u1))*(sqrt(1. + 4./u0) - 1.)
 		 - agol_G(phi0, uu, rs))/4./M_PI/rsrs;
