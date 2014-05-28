@@ -64,7 +64,6 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
     phi0, phi1, phi2, psi0, psi1, psi2, a1, a2, bl;
   UU=uu*uu;
   rlrl=rl*rl;
-  rsrs=rs*rs;
 
   if (fabs(rs) < EPSILON)
     { /* rs = 0 */
@@ -98,6 +97,7 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
     { /* rs != 0 */
       /* Extended source, use amplification formulae by Witt & Mao 1994. */
 
+      rsrs=rs*rs;
       /* Calculate amplification which will be used as base for successive
        * calculations.
        */
@@ -190,9 +190,9 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	      /* Outer image, case II */
 	      return 0;
 	    }
-	  else if (rs - bl < EPSILON && fabs(uu) < rs - bl)
-	    { /* rs < beta_l && |zeta_0| < rs - bl */
-	      /* Outer image, case VI.  TODO: check the formula */
+	  else if (rs - bl > EPSILON && uu - (rs - bl) <= EPSILON)
+	    { /* rs > beta_l && zeta_0 <= rs - bl */
+	      /* Outer image, case VI */
 	      return muplus + (1. - rlrl)/rsrs;
 	    }
 	  else
