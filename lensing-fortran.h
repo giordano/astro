@@ -14,5 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "lensing.h"
+#include <time.h>
+#include <gsl/gsl_rng.h>
 
 void extended_uniform_source_amp_(double*, double*, double*, double*);
+void rng_uniform_(double*, double*, int*, double rand[]);

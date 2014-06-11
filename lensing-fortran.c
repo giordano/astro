@@ -27,3 +27,26 @@ void extended_uniform_source_amp_(double *uu, double *rs, double *rl,
 {
   (*amp)=extended_uniform_source_amp((*uu), (*rs), (*rl));
 }
+
+/* Generate pseudo-random numbers uniformly distributed in an interval.
+ * Arguments:
+ *   aa    (in) = infimum of the interval in which to generate random numbers;
+ *   bb    (in) = extremum of the interval in which to generate random numbers;
+ *   nn    (in) = number of random numbers to be generated;
+ *   rand (out) = vector of length `n' of the generated random numbers.
+ */
+void rng_uniform_(double *aa, double *bb, int *nn, double rand[(*nn)])
+{
+  gsl_rng *rng;
+  int ii;
+
+  /* Allocate generator. */
+  rng = gsl_rng_alloc(gsl_rng_mt19937);
+  /* Seed the generator. */
+  gsl_rng_set(rng,(unsigned int)time(NULL));
+  /* Fill `rand' with generated random numbers. */
+  for (ii=0; ii<(*nn); ii++)
+    rand[ii]=(*aa) + ((*bb) - (*aa))*gsl_rng_uniform(rng);
+  /* Delete generator. */
+  gsl_rng_free(rng);
+}
