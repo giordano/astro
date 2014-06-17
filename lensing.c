@@ -40,7 +40,12 @@ double agol_G(double phi, double uu, double rs)
   u2=pow(uu + rs,2.);
   u1u2=u1*u2;
   u3=uu*uu - rsrs;
-  nn=1. - u1/u2;
+  /* When `uu' and `rs' are different but almost equal, u1 is very small (of
+   * order 10^-15 or less) and 1.-u1/u2 could be equal to 1., but last argument
+   * of P elliptic integral must be less than 1.  Thus we use the following
+   * equivalent expression for `nn' which in some cases avoids `nn' be exactly
+   * equal to 1. */
+  nn=4.*uu*rs/u2;
   k1=2.*sqrt((u2 - u1)/((4.*u2 + u1u2)));
   if (fabs(phi - M_PI_2) < EPSILON)
     /* For the special case phi = pi/2 use the dedicated complete elliptic

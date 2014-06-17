@@ -16,7 +16,7 @@ INSTALLED_FILES = $(INSTALLED_LIBS) $(INSTALLED_HEADERS)
 
 .PHONY: all install uninstall clean distclean check-syntax
 
-all: libgastro.a libgastro-fortran.a
+all: libgastro.a
 
 libgastro.a: kepler.o transits.o lensing.o kepler-fortran.o transits-fortran.o \
 	     lensing-fortran.o
