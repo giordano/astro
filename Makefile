@@ -1,6 +1,6 @@
 SHELL		= /bin/sh
 CC		= gcc
-CFLAGS		= -Wall -Wextra -pedantic -std=c99
+CFLAGS		= -Wall -Wextra -pedantic -std=c99 -g
 AR		= ar
 LIBRARIES	= -lm -lgsl -lgslcblas
 CLEAN_FILES	= *~

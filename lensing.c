@@ -46,7 +46,10 @@ double agol_G(double phi, double uu, double rs)
    * equivalent expression for `nn' which in some cases avoids `nn' be exactly
    * equal to 1. */
   nn=4.*uu*rs/u2;
-  k1=2.*sqrt((u2 - u1)/((4.*u2 + u1u2)));
+  /* This prevents `nn' from being exactly 1 in any case. */
+  if (nn >= 1)
+    nn=1.-EPSILON;
+  k1=4.*nn/(4. + u1);
   if (fabs(phi - M_PI_2) < EPSILON)
     /* For the special case phi = pi/2 use the dedicated complete elliptic
      * integral functions, which are slighly faster than the incomplete ones.
@@ -60,8 +63,9 @@ double agol_G(double phi, double uu, double rs)
 
 /* Compute the amplification for an extended source with uniform brightness,
  * using equations (16)-(25) in Agol 2002.  Arguments:
- *   uu = distance between source and lens, in units of Einstein radii;
- *   rs = source radius, in units of Einstein radii.
+ *   uu = distance between source and lens centers, in units of Einstein radii;
+ *   rs = source radius, in units of Einstein radii;
+ *   rl = lens radius, in units of Einstein radii.
  */
 double extended_uniform_source_amp(double uu, double rs, double rl)
 {
