@@ -17,10 +17,18 @@
 
 /* Compute the amplification for an extended source with uniform brightness,
  * using equations (16)-(25) in Agol 2002.  Arguments:
- *   uu  (in)  = distance between source and lens;
- *   rs  (in)  = source radius;
- *   rl  (in)  = lens radius;
+ *   uu  (in)  = distance between source and lens centers, in units of Einstein
+ *     radii;
+ *   rs  (in)  = source radius, in units of Einstein radii;
+ *   rl  (in)  = lens radius, in units of Einstein radii;
  *   amp (out) = amplification of the source.
+ *
+ * NOTA BENE: this function may not give reliable results when the distance
+ * between source and lens is much larger than the source radius **and** the
+ * source radius is small (e.g., `uu' is about ten order of magnitudes larger
+ * than `rs' and `rs' is of the order of unity or less).  You can workaround
+ * this issue by approximating the amplification with the amplification by a
+ * point-like lens.
  */
 void extended_uniform_source_amp_(double *uu, double *rs, double *rl,
 				  double *amp)

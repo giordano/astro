@@ -36,8 +36,11 @@ double agol_G(double phi, double uu, double rs)
 {
   double rsrs, u1, u2, u3, u1u2, nn, k1;
   rsrs=rs*rs;
-  u1=pow(uu - rs,2.);
-  u2=pow(uu + rs,2.);
+  /* Using the explicit extended expression for `u1' and `u2' gives more
+   * reliable results than using the `pow' function.
+   */
+  u1=uu*uu - 2.*uu*rs + rsrs;
+  u2=uu*uu + 2.*uu*rs + rsrs;
   u1u2=u1*u2;
   u3=uu*uu - rsrs;
   /* When `uu' and `rs' are different but almost equal, u1 is very small (of
@@ -49,16 +52,16 @@ double agol_G(double phi, double uu, double rs)
   /* This prevents `nn' from being exactly 1 in any case. */
   if (nn >= 1)
     nn=1.-EPSILON;
-  k1=4.*nn/(4. + u1);
+  k1=2.*sqrt(nn/(4. + u1));
   if (fabs(phi - M_PI_2) < EPSILON)
     /* For the special case phi = pi/2 use the dedicated complete elliptic
      * integral functions, which are slighly faster than the incomplete ones.
      */
     return ((4.*u2 + u1u2)*ellint_Ecomp(k1) - (u1u2 + 8.*u3)*ellint_Kcomp(k1)
-	    + 4.*u1*(1. + rsrs)*ellint_Pcomp(k1, nn))/sqrt((4.*u2 + u1u2));
+	    + 4.*u1*(1. + rsrs)*ellint_Pcomp(k1, nn))/sqrt(4.*u2 + u1u2);
   else
     return ((4.*u2 + u1u2)*ellint_E(phi, k1) - (u1u2 + 8.*u3)*ellint_F(phi, k1)
-	    + 4.*u1*(1. + rsrs)*ellint_P(phi, k1, nn))/sqrt((4.*u2 + u1u2));
+	    + 4.*u1*(1. + rsrs)*ellint_P(phi, k1, nn))/sqrt(4.*u2 + u1u2);
 }
 
 /* Compute the amplification for an extended source with uniform brightness,
@@ -66,6 +69,13 @@ double agol_G(double phi, double uu, double rs)
  *   uu = distance between source and lens centers, in units of Einstein radii;
  *   rs = source radius, in units of Einstein radii;
  *   rl = lens radius, in units of Einstein radii.
+ *
+ * NOTA BENE: this function may not give reliable results when the distance
+ * between source and lens is much larger than the source radius **and** the
+ * source radius is small (e.g., `uu' is about ten order of magnitudes larger
+ * than `rs' and `rs' is of the order of unity or less).  You can workaround
+ * this issue by approximating the amplification with the amplification by a
+ * point-like lens.
  */
 double extended_uniform_source_amp(double uu, double rs, double rl)
 {
