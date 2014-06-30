@@ -34,15 +34,16 @@
  */
 double agol_G(double phi, double uu, double rs)
 {
-  double rsrs, u1, u2, u3, u1u2, nn, k1;
+  double UU, rsrs, u1, u2, u3, u1u2, nn, k1;
+  UU=uu*uu;
   rsrs=rs*rs;
   /* Using the explicit extended expression for `u1' and `u2' gives more
    * reliable results than using the `pow' function.
    */
-  u1=uu*uu - 2.*uu*rs + rsrs;
-  u2=uu*uu + 2.*uu*rs + rsrs;
+  u1=UU - 2.*uu*rs + rsrs;
+  u2=UU + 2.*uu*rs + rsrs;
   u1u2=u1*u2;
-  u3=uu*uu - rsrs;
+  u3=UU - rsrs;
   /* When `uu' and `rs' are different but almost equal, u1 is very small (of
    * order 10^-15 or less) and 1.-u1/u2 could be equal to 1., but last argument
    * of P elliptic integral must be less than 1.  Thus we use the following
@@ -187,8 +188,8 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	    { /* zeta_0 > rs - beta_l */
 	      /* Inner image, case V? */
 	      u0=bl*bl;
-	      u1=pow(uu - rs,2);
-	      u2=pow(uu + rs,2);
+	      u1=UU - 2.*uu*rs + rsrs;
+	      u2=UU + 2.*uu*rs + rsrs;
 	      u3=UU - rsrs;
 	      phi0=acos(sqrt(u1*(u2 - u0)/(u0*(u2-u1))));
 	      phi1=acos((u1 + u2 - 2.*u0)/(u2-u1));
@@ -221,8 +222,8 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	  else
 	    { /* Outer image, case V? */
 	      u0=bl*bl;
-	      u1=pow(uu - rs,2);
-	      u2=pow(uu + rs,2);
+	      u1=UU - 2.*uu*rs + rsrs;
+	      u2=UU + 2.*uu*rs + rsrs;
 	      u3=UU - rsrs;
 	      psi0=acos(sqrt((u0 - u1)*(4. + u2)/(4. + u0)/(u2 - u1)));
 	      phi0=acos(sqrt(u1*(u2 - u0)/(u0*(u2-u1))));
