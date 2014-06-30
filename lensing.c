@@ -127,7 +127,11 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
       else
 	/* zeta_0 = rs */
 	/* Both images, case IV */
-	mu=2.*(rs + (1 + 2.*rs + rsrs)*atan(rs))/(M_PI*rsrs);
+	/* There is a misprint in the ApJ paper: the factor in front of the atan
+	 * is (1 + rs^2) instead of (1 + rs)^2.  It has already been fixed in
+	 * the FORTRAN code provided by Agol.
+	 */
+	mu=2.*(rs + (1. + rsrs)*atan(rs))/(M_PI*rsrs);
 
       /* Calculate amplifications of inner and outer images which will be used
        * in successive calculations.  In cases III and IV, mu_{±} = (···) ± 1/2
