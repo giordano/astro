@@ -18,6 +18,9 @@
  *     DOI:10.1086/342880.
  *   + Witt & Mao 1994: "Can lensed stars be regarded as pointlike for
  *     microlensing by MACHOs?", ApJ, 430:505-510, 1994.  DOI:10.1086/174426.
+ *   + Bulirsch 1965: "Numerical Calculation of Elliptic Integrals and Elliptic
+ *     Functions", Numerische Mathematik 7, 78-90 and 353-354, 1965.  DOIs:
+ *     10.1007/BF01397975 and 10.1007/BF01436529.
  */
 #include "lensing.h"
 
@@ -26,7 +29,87 @@
 /* Define precision accuracy. */
 #define EPSILON GSL_DBL_EPSILON
 
-/* Compute the G function, defined in equation (18) of Agol 2002.  Arguments:
+/* Complete elliptic integrals, with Bulirsch 1965 algorithms. */
+double bulirsch_ellint_Kcomp (double kk)
+{
+  double kc, mm, hh;
+  kc = sqrt(1. - kk*kk);
+  mm = 1.;
+  while (1)
+    {
+      hh = mm;
+      mm += kc;
+      if (fabs(1. - kc/hh) - 1e-13 > EPSILON)
+	{
+	  kc = sqrt(hh*kc);
+	  mm = mm/2.;
+	}
+      else
+	break;
+    }
+  return M_PI/mm;
+}
+
+double bulirsch_ellint_Ecomp (double kk)
+{
+  double hh, mm, aa, bb, kc, cc;
+  mm = 1.;
+  aa = 1.;
+  bb = 1. - kk*kk;
+  kc = sqrt(bb);
+  cc = aa;
+  aa += bb;
+  while (1)
+    {
+      bb = 2.*(cc*kc + bb);
+      cc = aa;
+      hh = mm;
+      mm += kc;
+      aa += bb/mm;
+      if (fabs(1. - kc/hh) - 1e-13 > EPSILON)
+	kc = 2.*sqrt(hh*kc);
+      else
+	break;
+    }
+  return M_PI_4*aa/mm;
+}
+
+double bulirsch_ellint_Pcomp (double kk, double nn)
+{
+  double kc, pp, m0, cc, ff, gg, dd, ee;
+  kc = sqrt(1. - kk*kk);
+  pp = nn + 1.;
+  if(pp < -EPSILON)
+    GSL_ERROR("negative p", GSL_EINVAL);
+  else
+    {
+      m0 = 1.;
+      cc = 1.;
+      pp = sqrt(pp);
+      dd = 1./pp;
+      ee = kc;
+      while (1)
+	{
+	  ff = cc;
+	  cc += dd/pp;
+	  gg = ee/pp;
+	  dd = 2.*(ff*gg + dd);
+	  pp += gg;
+	  gg = m0;
+	  m0 += kc;
+	  if(fabs(1. - kc/gg) - 1e-13 > EPSILON)
+	    {
+	      kc = 2.*sqrt(ee);
+	      ee = kc*m0;
+	    }
+	  else
+	    break;
+	}
+    }
+  return M_PI_2*(cc*m0 + dd)/(m0*(m0 + pp));
+}
+
+/* COMPUTE THE G function, defined in equation (18) of Agol 2002.  Arguments:
  *   phi = variable of integration in equation (15) of Agol 2002.  See also
  *         equation (18);
  *   u   = distance between source and lens;
@@ -168,9 +251,8 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	      v1=sqrt(4. + bl*bl);
 	      v2=sqrt(4.*rsrs - bl*bl);
 	      /* TODO: check this formula */
-	      a1=(0.25*v2*(bl - v1)
-		  + (1. + rsrs)*(acos(0.5*bl/rs)
-				 - atan(v2/v1)))/(M_PI*rsrs);
+	      a1=(0.25*v2*(bl - v1) + (1. + rsrs)*(acos(0.5*bl/rs)
+						   - atan(v2/v1)))/(M_PI*rsrs);
 	      a2=rlrl/M_PI/rsrs*acos(0.5*bl/rs);
 	      return muplus + muminus + a1 - a2;
 	    }

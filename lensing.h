@@ -18,6 +18,7 @@
  *     Jeffrey (ed.), Fifth edition (January 1994).
  */
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
 #include <gsl/gsl_sf_ellint.h>
 
 /* Elliptic integrals (complete and incomplete) as defined in Gradshteyn &
@@ -35,5 +36,8 @@
 /* Heaviside step function */
 #define HEAVISIDE(x) ((x >= -EPSILON) ? 1. : ((fabs(x) < EPSILON) ? 0.5 : 0.))
 
+double bulirsch_ellint_Kcomp(double);
+double bulirsch_ellint_Ecomp(double);
+double bulirsch_ellint_Pcomp(double, double);
 double agol_G(double, double, double);
 double extended_uniform_source_amp(double, double, double);
