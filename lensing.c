@@ -112,7 +112,7 @@ double bulirsch_ellint_Pcomp (double kk, double nn)
 /* COMPUTE THE G function, defined in equation (18) of Agol 2002.  Arguments:
  *   phi = variable of integration in equation (15) of Agol 2002.  See also
  *         equation (18);
- *   u   = distance between source and lens;
+ *   uu  = distance between source and lens centers;
  *   rs  = source radius.
  */
 double agol_G(double phi, double uu, double rs)
@@ -130,8 +130,8 @@ double agol_G(double phi, double uu, double rs)
   /* When `uu' and `rs' are different but almost equal, u1 is very small (of
    * order 10^-15 or less) and 1.-u1/u2 could be equal to 1., but last argument
    * of P elliptic integral must be less than 1.  Thus we use the following
-   * equivalent expression for `nn' which in some cases avoids `nn' be exactly
-   * equal to 1. */
+   * equivalent expression for `nn' which in some cases avoids `nn' being
+   * exactly equal to 1. */
   nn=4.*uu*rs/u2;
   /* This prevents `nn' from being exactly 1 in any case. */
   if (nn >= 1)
@@ -158,13 +158,13 @@ double agol_G(double phi, double uu, double rs)
  * between source and lens is much larger than the source radius **and** the
  * source radius is small (e.g., `uu' is about ten order of magnitudes larger
  * than `rs' and `rs' is of the order of unity or less).  You can workaround
- * this issue by approximating the amplification with the amplification by a
- * point-like lens.
+ * this issue by approximating the amplification with the amplification of a
+ * point-like source.
  */
 double extended_uniform_source_amp(double uu, double rs, double rl)
 {
-  double UU, rlrl, rsrs, muplus, muminus,  mu, v1, v2, u0, u1, u2, u3,
-    phi0, phi1, phi2, psi0, psi1, psi2, a1, a2, bl;
+  double UU, rlrl, rsrs, muplus, muminus, mu, v1, v2, u0, u1, u2, u3, phi0,
+    phi1, phi2, psi0, psi1, psi2, bl;
   UU=uu*uu;
   rlrl=rl*rl;
 
@@ -251,10 +251,10 @@ double extended_uniform_source_amp(double uu, double rs, double rl)
 	      v1=sqrt(4. + bl*bl);
 	      v2=sqrt(4.*rsrs - bl*bl);
 	      /* TODO: check this formula */
-	      a1=(0.25*v2*(bl - v1) + (1. + rsrs)*(acos(0.5*bl/rs)
-						   - atan(v2/v1)))/(M_PI*rsrs);
-	      a2=rlrl/M_PI/rsrs*acos(0.5*bl/rs);
-	      return muplus + muminus + a1 - a2;
+	      return muplus + muminus
+		+ (0.25*v2*(bl - v1) + (1. + rsrs)*(acos(0.5*bl/rs)
+						    - atan(v2/v1)))/(M_PI*rsrs)
+		- rlrl/M_PI/rsrs*acos(0.5*bl/rs);
 	    }
 	  else if (uu - (bl - rs) <= EPSILON)
 	    { /* zeta_0 <= beta_l - rs */
