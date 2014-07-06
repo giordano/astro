@@ -79,15 +79,24 @@ double bulirsch_ellint_Pcomp (double kk, double nn)
   double kc, pp, m0, cc, ff, gg, dd, ee;
   kc = sqrt(1. - kk*kk);
   pp = nn + 1.;
-  if(pp < -EPSILON)
-    GSL_ERROR("negative p", GSL_EINVAL);
+  if(fabs(kc*pp) < -EPSILON)
+    GSL_ERROR("kc*p = 0", GSL_EINVAL);
   else
     {
-      m0 = 1.;
-      cc = 1.;
-      pp = sqrt(pp);
-      dd = 1./pp;
       ee = kc;
+      m0 = 1.;
+      if (pp > EPSILON)
+	{
+	  cc = 1.;
+	  pp = sqrt(pp);
+	  dd = 1./pp;
+	}
+      else
+	{
+	  gg = 1. - pp;
+	  ff = kc*kc - pp;
+	  pp = sqrt(ff/gg);
+	}
       while (1)
 	{
 	  ff = cc;
