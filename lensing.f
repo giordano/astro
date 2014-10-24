@@ -1,16 +1,10 @@
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     Restituisce al `t' le coordinate `xi' ed `eta', rispetto al centro
-c     di massa delle lenti, di un punto che ha posizione (r, phi), in
-c     coordinate polari rispetto al centro della sorgente.  Quindi per
-c     ottenere la posizione, rispetto al centro di massa delle lenti,
-c     del centro della sorgente al tempo `t' basta chiamare la routine
-c     con r = phi = 0.
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Deprecated routine, kept for backward compatibility.
 c     ==================================================================
       subroutine Position (t,r,phi,xi,eta)
       Implicit double precision (a-h,o-z)
       common /Par_Evento/ t0, u0, tE, theta, rho, vv
 
+      print *, 'POSITION: this is a deprecated routine!'
       x0  = (t-t0)*vv           ! posizione del centro sorgente
       y0  = u0
       xs  = x0 + r*cos(phi)
@@ -18,6 +12,47 @@ c     ==================================================================
       xi=xs*cos(theta)-ys*sin(theta)
       eta=xs*sin(theta)+ys*cos(theta)
       end subroutine Position
+c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Returns at time `tt' the (xi, eta) coordinates, in frame of
+c     reference of the center of mass of the lens(es), of a point placed
+c     at (rr, phi) polar cooordinates referred to the center of mass of
+c     the source.  Thus, in order to get the position of the center of
+c     the source with respect to the center of mass of the lens(es) at
+c     time `tt', set rr = phi = 0.
+c     Input: t0    (double precision): time of closest approach
+c            u0    (double precision): distance of closest approach
+c            theta (double precision): angle between the apparent
+c                                      trajectory of the source in the
+c                                      lens plane and the xi axis
+c            vv    (double precision): apparent speed of the source,
+c                                      Einstein radius/Einstein time
+c            tt    (double precision): current time
+c            rr    (double precision): radial polar coordinate from source
+c                                    center
+c            phi (double precision): angular polar coordinate from
+c                                    source center
+c     Output: xi  (double precision): xi coordinate of the given point
+c             eta (double precision): eta coordinate of the given point
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ==================================================================
+      subroutine source_position (t0, u0, theta, vv, tt, rr, phi, xi,
+     &    eta)
+      implicit none
+      double precision t0, u0, theta, vv, tt, rr, phi, xi, eta, xs, ys
+
+c     Position of the source center in the non rotated frame of
+c     reference.
+      x0  = (tt-t0)*vv
+      y0  = u0
+c     Position of the point at (rr, phi) from the source center.
+      xs  = x0 + rr*cos(phi)
+      ys  = y0 + rr*sin(phi)
+c     Rotate coordinates by theta.
+      xi  = xs*cos(theta) - ys*sin(theta)
+      eta = xs*sin(theta) + ys*cos(theta)
+      end subroutine source_position
 c     ==================================================================
 
 c     ==================================================================
