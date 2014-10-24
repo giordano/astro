@@ -42,13 +42,10 @@ c     ==================================================================
       implicit none
       double precision t0, u0, theta, vv, tt, rr, phi, xi, eta, xs, ys
 
-c     Position of the source center in the non rotated frame of
-c     reference.
-      x0  = (tt-t0)*vv
-      y0  = u0
-c     Position of the point at (rr, phi) from the source center.
-      xs  = x0 + rr*cos(phi)
-      ys  = y0 + rr*sin(phi)
+c     Position of the point at (rr, phi) from the source center, in the
+c     non rotated frame of reference of the lens(es).
+      xs  = (tt-t0)*vv + rr*cos(phi)
+      ys  = u0         + rr*sin(phi)
 c     Rotate coordinates by theta.
       xi  = xs*cos(theta) - ys*sin(theta)
       eta = xs*sin(theta) + ys*cos(theta)
