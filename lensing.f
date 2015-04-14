@@ -426,7 +426,7 @@ c     complex coefficients of 5th order polynomial
 
 c     Find roots.  `mode_zroots' selects the polynomial solver routine.
       if (mode_zroots.eq.0) then
-        call cmplx_roots_5(zi, first_3_roots_order_changed, zc, .true.)
+        call cmplx_roots_5(zi, first_3_roots_order_changed, zc, .false.)
       else if (mode_zroots.eq.1) then
         zc_single = zc
         call zroots(zc_single, 5, zi_single, .true.)
