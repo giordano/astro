@@ -255,9 +255,9 @@ c     Coefficienti polinomio complesso
         Zcoeff(3)= m2 + m1 - r*z2q - r*z1q - 4d0*r*z1*z2
         Zcoeff(4)= 2d0*r*(z1 + z2)
         Zcoeff(5)= -r
-        if (mode_zroots.eq.0) then
+        if (mode_zroots.eq.0 .or. mode_zroots.eq.1) then
           call cmplx_roots_gen(zsol, zcoeff, 2*N, polish, .false.)
-        else if (mode_zroots.eq.1) then
+        else if (mode_zroots.eq.2) then
           zcoeff_single = zcoeff
           call zroots(zcoeff_single, 2*N, zsol_single, polish)
           zsol = zsol_single
@@ -330,9 +330,9 @@ c     Coefficienti polinomio complesso
         Zcoeff(3)= m2 + m1 - r*z2q - r*z1q - 4d0*r*z1*z2
         Zcoeff(4)= 2d0*r*(z1 + z2)
         Zcoeff(5)= -r
-        if (mode_zroots.eq.0) then
+        if (mode_zroots.eq.0 .or. mode_zroots.eq.1) then
           call cmplx_roots_gen(zsol, zcoeff, 2*N, polish, .false.)
-        else if (mode_zroots.eq.1) then
+        else if (mode_zroots.eq.2) then
           zcoeff_single = zcoeff
           call zroots(zcoeff_single, 2*N, zsol_single, polish)
           zsol = zsol_single
@@ -428,6 +428,8 @@ c     Find roots.  `mode_zroots' selects the polynomial solver routine.
       if (mode_zroots.eq.0) then
         call cmplx_roots_5(zi, first_3_roots_order_changed, zc, .false.)
       else if (mode_zroots.eq.1) then
+        call cmplx_roots_gen(zi, zc, 5, .true., .false.)
+      else if (mode_zroots.eq.2) then
         zc_single = zc
         call zroots(zc_single, 5, zi_single, .true.)
         zi = zi_single
