@@ -1,3 +1,9 @@
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                  SOURCE POSITION IN THE SKY                  ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
 c     Deprecated routine, kept for backward compatibility.
 c     ==================================================================
       subroutine Position (t,r,phi,xi,eta)
@@ -52,6 +58,12 @@ c     Rotate coordinates by theta.
       end subroutine source_position
 c     ==================================================================
 
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                    PACZYNSKY AMPLIFICATION                   ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
 c     ==================================================================
       subroutine paczynski_amplification (u, ampl)
       implicit none
@@ -59,6 +71,12 @@ c     ==================================================================
       ampl = (u**2 + 2d0)/(u*sqrt(u**2 + 4d0))
       end subroutine paczynski_amplification
 c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                  HEXADECAPOLE AMPLIFICATION                  ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     Routine per il calcolo dell'amplificazione di una sorgente estesa
@@ -141,6 +159,12 @@ c     amplificazione, vedi equazione (6) di Gould
 
       end subroutine hexadecapole_amplification
 c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                   CAUSTIC AND CRITIC CURVES                  ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     Scrive su file le coordinate dei punti che formano le caustiche,
@@ -347,6 +371,12 @@ c     Curve critiche
 c     ==================================================================
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                   WITT & MAO AMPLIFICATION                   ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     Witt_Mao
 c     Input (NOTA: le coordinate devono essere date nel sistema di
 c     riferimento del punto medio delle lenti):
@@ -538,13 +568,112 @@ c     ==================================================================
       end function f_lee
 c     ==================================================================
 
-c     Routine di J. Skowron & A. Gould per la ricerca degli zeri di
-c     polinomi a coefficienti complessi.  Vedi
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc              TERRESTRIAL PARALLAX (M. DOMINIK)               ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+c     In paper Dominik, A&A, v.329, p.361-374 (1998)
+c     (http://adsabs.harvard.edu/abs/1998A%26A...329..361D) there are
+c     two strategies to calculate parallax corrections: one exact,
+c     outlined in the body of the paper (implemented in "parallax2"
+c     below), another one approximated for trajectories with small
+c     eccentricity, shown in the appendix ("parallax1" below).
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Add parallax corrections to the coordinates (xi, eta) at time t,
+c     returns coordinates (xi_parallax, eta_parallax).  Approximated for
+c     small eccentricity.
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ==================================================================
+      subroutine parallax1 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
+     &    x1t0, x2t0, xi_parallax, eta_parallax)
+      implicit none
+      common /constants/ pi
+      double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
+     &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
+
+      call parallax1_t(P, tp, e, rhop, phi, chi, tt, x1t, x2t)
+
+c     Calculate source position taking into account Earth parallax.  See
+c     equations (A9) and (A10) of Dominik, A&A, v.329, p.361-374 (1998).
+      xi_parallax  = xi  + (x1t - x1t0)*cos(psi) + (x2t - x2t0)
+     &    *sin(psi)
+      eta_parallax = eta - (x1t - x1t0)*sin(psi) + (x2t - x2t0)
+     &    *cos(psi)
+      end subroutine parallax1
+c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Calculate parallax corrections (x1t, x2t) at time tt.
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ==================================================================
+      subroutine parallax1_t (P, tp, e, rhop, phi, chi, tt, x1t, x2t)
+      implicit none
+      common /constants/ pi
+      double precision P, tp, e, M, rhop, phi, chi, x1t, x2t, nu, pi, tt
+     &    , aprime
+
+      M  = 2d0*pi*(tt - tp)/P
+      nu = M + 2d0*e*sin(M) - phi
+      Aprime = rhop*(1d0 - e*cos(M))
+
+      x1t = -Aprime*sin(chi)*cos(nu)
+      x2t = Aprime*sin(nu)
+      end subroutine parallax1_t
+c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Add parallax corrections to the coordinates (xi, eta) at time t,
+c     returns coordinates (xi_parallax, eta_parallax).  Exact solution.
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ==================================================================
+      subroutine parallax2 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
+     &    x1t0, x2t0, xi_parallax, eta_parallax)
+      implicit none
+      common /constants/ pi
+      double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
+     &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
+
+      call parallax2_t(P, tp, e, rhop, phi, chi, tt, x1t, x2t)
+
+c     Calculate source position taking into account Earth parallax.  See
+c     equations (88) and (89) of Dominik, A&A, v.329, p.361-374 (1998).
+      xi_parallax  = xi  + (x1t - x1t0)*cos(psi) + (x2t - x2t0)
+     &    *sin(psi)
+      eta_parallax = eta - (x1t - x1t0)*sin(psi) + (x2t - x2t0)
+     &    *cos(psi)
+      end subroutine parallax2
+c     ==================================================================
+
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     Calculate parallax corrections (x1t, x2t) at time tt.
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ==================================================================
+      subroutine parallax2_t (P, tp, epsilon, rhop, phi, chi, tt, x1t,
+     &    x2t)
+      implicit none
+      common /constants/ pi
+      double precision P, tp, epsilon, M, rhop, phi, chi, x1t , x2t, E,
+     &    x, y, pi, tt
+
+      M = 2d0*pi*(tt - tp)/P
+      E = M  + epsilon*sin(M)
+
+      x = rhop*(cos(E) - epsilon)
+      y = rhop*sqrt(1d0 - epsilon**2)*sin(E)
+
+      x1t = -sin(chi)*(x*cos(phi) + y*sin(phi))
+      x2t = -x*sin(phi) + y*cos(phi)
+      end subroutine parallax2_t
+c     ==================================================================
+
+c     Complex polynomial root solver by J. Skowron & A. Gould.  See:
 c     http://www.astrouw.edu.pl/~jskowron/cmplx_roots_sg/
 c     http://arxiv.org/abs/1203.1034
       include 'cmplx_roots_sg_77.f'
 
-c     Routine per la ricerca degli zeri di polinomi a coefficienti
-c     complessi incluse in Numerical Recipes.
+c     Complex polynomial root solver by Numerical Recipes.
       include 'zroots.for'
       include 'laguer.for'
