@@ -490,6 +490,12 @@ c     sum amplification
       END subroutine Witt_Mao
 c     ==================================================================
 
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+cccccccccc                                                    cccccccccc
+ccccc                 FINITE SOURCE AMPLIFICATION                  ccccc
+cccccccccc                                                    cccccccccc
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
 c     ==================================================================
 c     Routine to calculate the amplification using the approximation by
 c     Lee et al (doi:10.1088/0004-637X/695/1/200) for a finite source,
@@ -583,8 +589,33 @@ c     eccentricity, shown in the appendix ("parallax1" below).
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     Add parallax corrections to the coordinates (xi, eta) at time t,
-c     returns coordinates (xi_parallax, eta_parallax).  Approximated for
-c     small eccentricity.
+c     returns corrected coordinates (xi_parallax, eta_parallax).
+c     Approximated for small eccentricity.  Arguments:
+c       P    (in) = Earth period, in seconds
+c       tp   (in) = time of Earth perihelion passage, in seconds
+c       e    (in) = Earth eccentricity
+c       rhop (in) = Earth semi-major axis, projected onto the lens
+c                   plane, in units of Einstein radii (see equation (83)
+c                   of the paper)
+c       phi  (in) = longitude of the source, measured in the ecliptic
+c                   plane from the perihelion towards the Earth's motion
+c       chi  (in) = latitude of the source, measured from the ecliptic
+c                   plane towards the ecliptic north
+c       psi  (in) = rotation angle in the lens plane describing
+c                   the relative orientation of v_\perp
+c                   to the Sun-Earth system
+c       tt   (in) = time, in seconds
+c       xi   (in) = xi coordinate at time tt, to be corrected by
+c                   parallax effect
+c       eta  (in) = eta coordinate at time tt, to be corrected by
+c                   parallax effect
+c       x1t0 (in) = \tilde{x}_1 at time t_max (see equation (84))
+c       x2t0 (in) = \tilde{x}_2 at time t_max (see equation (85))
+c       xi_parallax (out)  = xi coordinate at time tt, corrected by
+c                            parallax effect
+c       eta_parallax (out) = eta coordinate at time tt, corrected by
+c                            parallax effect
+c     Call "parallax1_t" with tt=t_max to get x1t0 and x2t0.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     ==================================================================
       subroutine parallax1 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
@@ -594,6 +625,8 @@ c     ==================================================================
       double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
      &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
 
+c     Get \tilde{x}_1 and \tilde{x}_2 at current time tt, "x1t" and
+c     "x2t" in the code.
       call parallax1_t(P, tp, e, rhop, phi, chi, tt, x1t, x2t)
 
 c     Calculate source position taking into account Earth parallax.  See
@@ -606,7 +639,21 @@ c     equations (A9) and (A10) of Dominik, A&A, v.329, p.361-374 (1998).
 c     ==================================================================
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     Calculate parallax corrections (x1t, x2t) at time tt.
+c     Calculate (\tilde{x}_1, \tilde{x}_2) at time tt (equations (A7)
+c     and (A8)) for the approximated solution.  Arguments:
+c       P    (in) = Earth period, in seconds
+c       tp   (in) = time of Earth perihelion passage, in seconds
+c       e    (in) = Earth eccentricity
+c       rhop (in) = Earth semi-major axis, projected onto the lens
+c                   plane, in units of Einstein radii (see equation (83)
+c                   of the paper)
+c       phi  (in) = longitude of the source, measured in the ecliptic
+c                   plane from the perihelion towards the Earth's motion
+c       chi  (in) = latitude of the source, measured from the ecliptic
+c                   plane towards the ecliptic north
+c       tt   (in) = time, in seconds
+c       x1t (out) = \tilde{x}_1 at time tt
+c       x2t (out) = \tilde{x}_2 at time tt
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     ==================================================================
       subroutine parallax1_t (P, tp, e, rhop, phi, chi, tt, x1t, x2t)
@@ -615,10 +662,18 @@ c     ==================================================================
       double precision P, tp, e, M, rhop, phi, chi, x1t, x2t, nu, pi, tt
      &    , aprime
 
+c     Mean anomaly.
       M  = 2d0*pi*(tt - tp)/P
+c     First order approximation of true anomaly in series of
+c     eccentricity, shifted by phi (see equation (A12)), indicated with
+c     \xi(t) in the paper.  For the approximation of true anomaly see
+c     equation (6.1), page 108, of Montenbruck & Pfleger, "Astronomy on
+c     the personal computer", indicated with \nu there.
       nu = M + 2d0*e*sin(M) - phi
       Aprime = rhop*(1d0 - e*cos(M))
 
+c     \tilde{x}_i(t), see equations (A7) and (A8).  "phi" is absorded
+c     into true anomaly, so we use the expressions for phi = 0.
       x1t = -Aprime*sin(chi)*cos(nu)
       x2t = Aprime*sin(nu)
       end subroutine parallax1_t
@@ -626,7 +681,33 @@ c     ==================================================================
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     Add parallax corrections to the coordinates (xi, eta) at time t,
-c     returns coordinates (xi_parallax, eta_parallax).  Exact solution.
+c     returns corrected coordinates (xi_parallax, eta_parallax).  Exact
+c     solution.  Arguments:
+c       P    (in) = Earth period, in seconds
+c       tp   (in) = time of Earth perihelion passage, in seconds
+c       e    (in) = Earth eccentricity
+c       rhop (in) = Earth semi-major axis, projected onto the lens
+c                   plane, in units of Einstein radii (see equation (83)
+c                   of the paper)
+c       phi  (in) = longitude of the source, measured in the ecliptic
+c                   plane from the perihelion towards the Earth's motion
+c       chi  (in) = latitude of the source, measured from the ecliptic
+c                   plane towards the ecliptic north
+c       psi  (in) = rotation angle in the lens plane describing
+c                   the relative orientation of v_\perp
+c                   to the Sun-Earth system
+c       tt   (in) = time, in seconds
+c       xi   (in) = xi coordinate at time tt, to be corrected by
+c                   parallax effect
+c       eta  (in) = eta coordinate at time tt, to be corrected by
+c                   parallax effect
+c       x1t0 (in) = \tilde{x}_1 at time t_max (see equation (84))
+c       x2t0 (in) = \tilde{x}_2 at time t_max (see equation (85))
+c       xi_parallax (out)  = xi coordinate at time tt, corrected by
+c                            parallax effect
+c       eta_parallax (out) = eta coordinate at time tt, corrected by
+c                            parallax effect
+c     Call "parallax2_t" with tt=t_max to get x1t0 and x2t0.
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     ==================================================================
       subroutine parallax2 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
@@ -636,6 +717,8 @@ c     ==================================================================
       double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
      &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
 
+c     Get \tilde{x}_1 and \tilde{x}_2 at current time tt, "x1t" and
+c     "x2t" in the code.
       call parallax2_t(P, tp, e, rhop, phi, chi, tt, x1t, x2t)
 
 c     Calculate source position taking into account Earth parallax.  See
@@ -648,7 +731,21 @@ c     equations (88) and (89) of Dominik, A&A, v.329, p.361-374 (1998).
 c     ==================================================================
 
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     Calculate parallax corrections (x1t, x2t) at time tt.
+c     Calculate (\tilde{x}_1, \tilde{x}_2) at time tt (equations (84)
+c     and (85)) for the exact solution.  Arguments:
+c       P    (in) = Earth period, in seconds
+c       tp   (in) = time of Earth perihelion passage, in seconds
+c       epsilon (in) = Earth eccentricity
+c       rhop (in) = Earth semi-major axis, projected onto the lens
+c                   plane, in units of Einstein radii (see equation (83)
+c                   of the paper)
+c       phi  (in) = longitude of the source, measured in the ecliptic
+c                   plane from the perihelion towards the Earth's motion
+c       chi  (in) = latitude of the source, measured from the ecliptic
+c                   plane towards the ecliptic north
+c       tt   (in) = time, in seconds
+c       x1t (out) = \tilde{x}_1 at time tt
+c       x2t (out) = \tilde{x}_2 at time tt
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     ==================================================================
       subroutine parallax2_t (P, tp, epsilon, rhop, phi, chi, tt, x1t,
@@ -658,12 +755,19 @@ c     ==================================================================
       double precision P, tp, epsilon, M, rhop, phi, chi, x1t , x2t, E,
      &    x, y, pi, tt
 
+c     Mean anomaly.
       M = 2d0*pi*(tt - tp)/P
+c     E is the accentric anomaly.  Here we use a crude solution of the
+c     Kepler equation.  XXX: check this!
       E = M  + epsilon*sin(M)
 
+c     These are x and y defined in equations (78) and (79) of the paper
+c     already multiplied by (1 - x)/R_E, so that there is a global rho'
+c     factor in front of them.
       x = rhop*(cos(E) - epsilon)
       y = rhop*sqrt(1d0 - epsilon**2)*sin(E)
 
+c     \tilde{x}_i(t), see equations (84) and (85) of the paper.
       x1t = -sin(chi)*(x*cos(phi) + y*sin(phi))
       x2t = -x*sin(phi) + y*cos(phi)
       end subroutine parallax2_t
