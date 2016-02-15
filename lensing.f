@@ -755,11 +755,13 @@ c     ==================================================================
       double precision P, tp, epsilon, M, rhop, phi, chi, x1t , x2t, E,
      &    x, y, pi, tt
 
-c     Mean anomaly.
-      M = 2d0*pi*(tt - tp)/P
-c     E is the accentric anomaly.  Here we use a crude solution of the
-c     Kepler equation.  XXX: check this!
-      E = M  + epsilon*sin(M)
+c     Mean anomaly.  Note: it must be in the range [0, 2pi].
+      M = mod(2d0*pi*(tt - tp)/P, 2d0*pi)
+c     Calculate eccentric anomaly E with Newton's method.
+      E = M
+      do while (abs(E - epsilon*sin(E) - M) .gt. 1d-6)
+        E = E - (E - epsilon*sin(E) - M)/(1d0 - epsilon*cos(E))
+      enddo
 
 c     These are x and y defined in equations (78) and (79) of the paper
 c     already multiplied by (1 - x)/R_E, so that there is a global rho'
