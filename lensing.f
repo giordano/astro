@@ -94,7 +94,6 @@ c     ==================================================================
      &    hex_amplification, A0)
       implicit none
       common /Par_Evento/ t0, u0, tE, theta, rho, vv
-      common /constants/ pi
       common /limb_darkening/ Gamma
       common /Par_ampli/ tfirst, tlast, NStepTime
 
@@ -104,6 +103,7 @@ c     ==================================================================
      &    tfirst, tlast,  Gamma, phi, vv
       integer NStepTime
 
+      pi = 3.14159265358979323846264338328d0
 c     phi: angolo rispetto alle direzioni cardinali.
       phi = 0d0
 
@@ -251,9 +251,9 @@ c     si utilizzi zroots.for per la ricerca degli zeri.
       logical polish
       common/parca/theta(N_theta),xi(2*N,N_theta),eta(2*N,N_theta)
       common/parcc/xcr(2*N,N_theta),ycr(2*N,N_theta)
-      common /constants/ pi
       common /mode_zroots/ mode_zroots
 
+      pi = 3.14159265358979323846264338328d0
       polish=.true.
 
       grado=2d0*N
@@ -326,9 +326,9 @@ c     si utilizzi zroots.for per la ricerca degli zeri.
       logical polish
       common/parca/theta(N_theta),xi(2*N,N_theta),eta(2*N,N_theta)
       common/parcc/xcr(2*N,N_theta),ycr(2*N,N_theta)
-      common /constants/ pi
       common /mode_zroots/ mode_zroots
 
+      pi = 3.14159265358979323846264338328d0
       polish=.true.
 
       grado=2d0*N
@@ -621,9 +621,8 @@ c     ==================================================================
       subroutine parallax1 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
      &    x1t0, x2t0, xi_parallax, eta_parallax)
       implicit none
-      common /constants/ pi
       double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
-     &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
+     &    chi, psi, xi, eta, x1t, x2t, x1t0, x2t0, tt
 
 c     Get \tilde{x}_1 and \tilde{x}_2 at current time tt, "x1t" and
 c     "x2t" in the code.
@@ -658,10 +657,10 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c     ==================================================================
       subroutine parallax1_t (P, tp, e, rhop, phi, chi, tt, x1t, x2t)
       implicit none
-      common /constants/ pi
       double precision P, tp, e, M, rhop, phi, chi, x1t, x2t, nu, pi, tt
      &    , aprime
 
+      pi = 3.14159265358979323846264338328d0
 c     Mean anomaly.
       M  = 2d0*pi*(tt - tp)/P
 c     First order approximation of true anomaly in series of
@@ -713,9 +712,8 @@ c     ==================================================================
       subroutine parallax2 (P, tp, e, rhop, phi, chi, psi, tt, xi, eta,
      &    x1t0, x2t0, xi_parallax, eta_parallax)
       implicit none
-      common /constants/ pi
       double precision xi_parallax, eta_parallax, P, tp, e, rhop, phi,
-     &    chi, psi, xi, eta, pi, x1t, x2t, x1t0, x2t0, tt
+     &    chi, psi, xi, eta, x1t, x2t, x1t0, x2t0, tt
 
 c     Get \tilde{x}_1 and \tilde{x}_2 at current time tt, "x1t" and
 c     "x2t" in the code.
@@ -751,10 +749,10 @@ c     ==================================================================
       subroutine parallax2_t (P, tp, epsilon, rhop, phi, chi, tt, x1t,
      &    x2t)
       implicit none
-      common /constants/ pi
       double precision P, tp, epsilon, M, rhop, phi, chi, x1t , x2t, E,
      &    x, y, pi, tt
-
+      
+      pi = 3.14159265358979323846264338328d0
 c     Mean anomaly.  Note: it must be in the range [0, 2pi].
       M = mod(2d0*pi*(tt - tp)/P, 2d0*pi)
 c     Calculate eccentric anomaly E with Newton's method.
